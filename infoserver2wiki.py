@@ -127,10 +127,24 @@ def list_interfaces():
             str(ord(addr[2])) + '.' + \
             str(ord(addr[3]))
 
+    def get_default_gateway():
+        """Read the default gateway directly from /proc."""
+        with open("/proc/net/route") as fh:
+            for line in fh:
+                fields = line.strip().split()
+                if fields[1] != '00000000' or not int(fields[3], 16) & 2:
+                    continue
+                return socket.inet_ntoa(struct.pack("<L", int(fields[2], 16)))
+
+
     ifs = all_interfaces()
+    gw = get_default_gateway()
+
     putline('\033[0m' + "^Interface ^ Address ^")
     for i in ifs:
-        putline('\033[0m' + "|%1s|%s|" % (i[0], format_ip(i[1])))
+        putline('\033[0m' + "| %1s | %s |" % (i[0], format_ip(i[1])))
+
+    putline('\033[0m' + "| Default gateway | %s | " % gw)
 
 
 def show_chkconfig():

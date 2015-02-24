@@ -46,7 +46,6 @@ def putline(line):
     line = re.sub(r'(?is)\033\[.*?m', '', line)
     filereport.write(line.replace(line, line + '\n'))
 
-
 def header():
     ''' Documentation header'''
 
@@ -64,31 +63,31 @@ def show_cpu():
     '''Show CPUS'''
     number_cpus = psutil.cpu_count()
     putline('')
-    putline('\033[93m' + '=== CPU ===')
-    putline('\033[0m' + 'Total cpus: ' + str(number_cpus))
+    putline('=== CPU ===')
+    putline('Total cpus: ' + str(number_cpus))
 
 
 def show_memory():
     '''Displays amount of memory'''
     putline('')
-    putline('\033[93m' + '=== Memory ===')
+    putline('=== Memory ===')
     uso_memory = psutil.virtual_memory()
     total_swap = psutil.swap_memory()
-    putline('\033[0m' + 'Memory: ' +
+    putline('Memory: ' +
             str(convert_bytes(uso_memory[0])))
     putline(' ')
-    putline('\033[0m' + 'swap: ' + str(convert_bytes(total_swap[0])))
+    putline('swap: ' + str(convert_bytes(total_swap[0])))
 
 
 def show_partitions():
     ''' Show partitions '''
     partitions = psutil.disk_partitions()
     putline('')
-    putline('\033[93m' + '=== Mount Points ===')
+    putline('=== Mount Points ===')
 
-    putline('\033[0m' + "^Device ^ Mount Point ^FileSystem ^ Options ^ ")
+    putline("^Device ^ Mount Point ^FileSystem ^ Options ^ ")
     for item in partitions:
-        putline('\033[0m' + '|' + str(item[0]) + '|' + str(
+        putline('|' + str(item[0]) + '|' + str(
             item[1]) + '|' + str(item[2]) + '|' + str(item[3]) + '|')
 
 
@@ -96,7 +95,7 @@ def list_interfaces():
     '''list network interfaces'''
 
     putline('')
-    putline('\033[93m' + '=== Interfaces ===')
+    putline('=== Interfaces ===')
 
     def all_interfaces():
         '''get all interfaces'''
@@ -140,24 +139,24 @@ def list_interfaces():
     ifs = all_interfaces()
     gw = get_default_gateway()
 
-    putline('\033[0m' + "^Interface ^ Address ^")
+    putline("^Interface ^ Address ^")
     for i in ifs:
-        putline('\033[0m' + "| %1s | %s |" % (i[0], format_ip(i[1])))
+        putline("| %1s | %s |" % (i[0], format_ip(i[1])))
 
-    putline('\033[0m' + "| Default gateway | %s | " % gw)
+    putline("| Default gateway | %s | " % gw)
 
 
 def show_chkconfig():
     '''Displays the services enabled at startup'''
     putline('')
-    putline('\033[93m' + '=== Services enabled at startup ===')
+    putline('=== Services enabled at startup ===')
 
     if 'centos' in distro:
         servicescentos = []
         chkconfigon = os.popen('chkconfig |grep 3:on |awk \'{print $1}\'')
         for line in chkconfigon:
             servicescentos.append(line.strip())
-        putline('\033[94m' + str(servicescentos))
+        putline(str(servicescentos))
 
     elif "ubuntu" == distro:
         serviceschk = []
@@ -167,7 +166,7 @@ def show_chkconfig():
 
         for servicosrodando in serviceschk:
             #ServicosRodando.replace('start/running,', '')
-            putline('\033[92m' + '' + '  *  ' + servicosrodando)
+            putline('' + '  *  ' + servicosrodando)
     elif "gentoo" == distro:
         servicesgentoo = []
         services_running_gentoo = os.popen("rc-status |grep started |awk {'print $1'}")
@@ -176,10 +175,34 @@ def show_chkconfig():
             servicesgentoo.append(line.strip())
 
         for servicesenabledgentoo in servicesgentoo:
-            putline('\033[94m' + " * "+ str(servicesenabledgentoo))
+            putline(" * "+ str(servicesenabledgentoo))
 
     else:
-        putline('\033[94m' + " * distro unknown ")
+        putline(" * distro unknown ")
+
+def crontab():
+    ''' Show crontab on system'''
+
+    import os.path
+    putline('')
+    putline('=== crontab ===')
+
+    dir_crons = ['/etc/cron.d/',
+    '/etc/cron.daily/',
+    '/etc/cron.deny/',
+    '/etc/cron.hourly/',
+    '/etc/cron.monthly/',
+    '/etc/cron.weekly/']
+
+    for dirs in dir_crons:
+        if os.path.exists(dirs) is True:
+            for file in os.listdir(dirs):
+                fullpath = dirs+file
+                putline('File: ' + fullpath + '\n')
+                putline('<code>')
+                file1 = open(fullpath, "r").read()
+                putline(file1)
+                putline('</code>')
 
 def check_iptables():
     '''List the rules of iptables'''
@@ -187,25 +210,25 @@ def check_iptables():
     table = iptc.Table(iptc.Table.FILTER)
 
     putline('')
-    putline('\033[93m' + '=== Iptables ===')
-#    putline('\033[0m' '<code>')
+    putline('=== Iptables ===')
+#    putline('<code>')
 
     for chain in table.chains:
 
-        putline('\033[0m' + "* Chain " + chain.name)
+        putline("* Chain " + chain.name)
         if len(chain.name) >= 0:
-            putline('\033[0m' + " ** Not rules defined")
+            putline(" ** Not rules defined")
         for rule in chain.rules:
-            print "Rule", "proto:", rule.protocol, "src:", rule.src, "dst:", rule.dst, "in:", rule.in_interface, "out:", rule.out_interface,
+            putline("Rule", "proto:", rule.protocol, "src:", rule.src, "dst:", rule.dst, "in:", rule.in_interface, "out:", rule.out_interface)
 
-            putline('\033[0m' + "* Matches: " + chain.name)
+            putline("* Matches: " + chain.name)
             for match in rule.matches:
-                putline('\033[0m' + match.name)
+                putline(match.name)
 #                print match.name,
-            print "Target:",
-            print rule.target.name
+            putline("Target:")
+            putline(rule.target.name)
 
-#    putline('\033[0m' '</code>')
+#    putline('</code>')
 
 
 def funcoes_habilitadas():
@@ -217,7 +240,7 @@ def funcoes_habilitadas():
     list_interfaces()
     show_chkconfig()
     check_iptables()
-
+    crontab()
 
 def main(argv):
     '''running functions'''
@@ -227,3 +250,4 @@ def main(argv):
 
 if __name__ == "__main__":
     main(sys.argv[1:])
+

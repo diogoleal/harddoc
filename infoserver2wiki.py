@@ -10,13 +10,15 @@ import socket
 import psutil
 import struct
 import platform
+from datetime import datetime
+
 
 osdistro = platform.dist()
 distro = osdistro[0].lower()
 
 hostname = socket.gethostname()
-
-reporttxt = ('/tmp/%s.txt' % hostname)
+tag = datetime.now().strftime('%y.%m.%d_%H.%M')
+reporttxt = ('/tmp/%s_%s.txt' % (hostname, tag))
 
 def convert_bytes(bytes):
     '''Convert from bytes to megabyte '''
@@ -38,7 +40,6 @@ def convert_bytes(bytes):
         size = '%.2fb' % bytes
     return size
 
-
 def putline(line):
     ''' Function that enhances the print() and print the text file '''
     print line
@@ -57,7 +58,6 @@ def header():
     putline(' ')
     putline('Operation System: ' + osdistro[0] + " " + arch)
     putline('----------------------------------------------')
-
 
 def show_cpu():
     '''Show CPUS'''

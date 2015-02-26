@@ -135,7 +135,6 @@ def list_interfaces():
                     continue
                 return socket.inet_ntoa(struct.pack("<L", int(fields[2], 16)))
 
-
     ifs = all_interfaces()
     gw = get_default_gateway()
 
@@ -219,12 +218,13 @@ def check_iptables():
         if len(chain.name) >= 0:
             putline(" ** Not rules defined")
         for rule in chain.rules:
-            putline("Rule", "proto:", rule.protocol, "src:", rule.src, "dst:", rule.dst, "in:", rule.in_interface, "out:", rule.out_interface)
+            putline("Rule")
+            putline("Protocol: ^ source ^ destination ^ in: ^ out ^ ")
+            putline("|" + rule.protocol + "|" + rule.src +  "|" + rule.dst + "|" + rule.in_interface + "|" +  str(rule.out_interface))
 
             putline("* Matches: " + chain.name)
             for match in rule.matches:
                 putline(match.name)
-#                print match.name,
             putline("Target:")
             putline(rule.target.name)
 

@@ -10,10 +10,11 @@ List some operating system information and creates a text file in the format dok
 * Interfaces and the network address
 * Mounted partitions
 * Show crontab
+* Normal users and users system
 
 ## ToDo
 Soon I will implement:
-* List created users and groups that are not system
+* List groups that are not system
 * Configured routes
 * Repositories configured
 

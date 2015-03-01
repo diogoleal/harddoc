@@ -231,6 +231,29 @@ def check_iptables():
 #    putline('</code>')
 
 
+def users():
+    ''' show users'''
+    putline('')
+    putline('=== Users in system ===')
+
+    shadow = open("/etc/shadow", "r")
+    putline('Users system:')
+    for line in shadow:
+        if re.match("(.*):!:(.*)", line):
+
+            result = line.partition(':')
+            putline('  * ' + result[0] )
+    shadow.close()
+
+    shadow = open("/etc/shadow", "r")
+    putline('\n'+ 'Normal users:')
+    for line1 in shadow:
+        if not re.match("(.*):!:(.*)", line1):
+            result = line1.partition(':')
+            putline('  * ' + result[0] )
+
+    shadow.close()
+
 def funcoes_habilitadas():
     '''functions enabled'''
     header()
@@ -241,6 +264,7 @@ def funcoes_habilitadas():
     show_chkconfig()
     check_iptables()
     crontab()
+    users()
 
 def main(argv):
     '''running functions'''

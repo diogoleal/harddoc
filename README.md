@@ -12,6 +12,20 @@ List some operating system information and creates a text file in the format dok
 * Show crontab
 * Normal users and users system
 
+
+## Install dependencies
+Dependencies are psutils and pyhon-iptables
+
+To facilitate:
+
+```
+pip install -r requirements.txt
+```
+
+## Display order:
+Change the order on display_function() to sort the report display.
+
+
 ## ToDo
 Soon I will implement:
 * List groups that are not system

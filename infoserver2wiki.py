@@ -254,8 +254,8 @@ def users():
 
     shadow.close()
 
-def funcoes_habilitadas():
-    '''functions enabled'''
+def display_function():
+    '''Change this function to organize the display of report'''
     header()
     show_cpu()
     show_memory()
@@ -269,7 +269,7 @@ def funcoes_habilitadas():
 def main(argv):
     '''running functions'''
     os.system('clear')
-    funcoes_habilitadas()
+    display_function()
     print '\nReport generated in:', reporttxt
 
 if __name__ == "__main__":
